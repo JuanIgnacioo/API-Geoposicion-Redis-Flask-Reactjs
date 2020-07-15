@@ -1,0 +1,36 @@
+version: "3"
+services:
+  backend:
+    build: ./backend
+
+    container_name: 'backflask'
+
+    command: sh -c 'python app.py'
+
+    ports:
+      - '5000:5000'
+    volumes:
+      - ./backend:/backend
+
+    depends_on:
+      - "db-maps-fr"
+    
+  db-maps-fr:
+
+    container_name: 'db_redis_maps_fr'
+    image: redis
+    ports:
+      - "6379:6379"
+
+  frontend:
+    build: ./frontend
+    container_name: 'fronreact'
+    command: sh -c 'npm install; npm start'
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./frontend:/frontend
+    depends_on:
+      - "backend"
+    stdin_open: true
+    tty: true
